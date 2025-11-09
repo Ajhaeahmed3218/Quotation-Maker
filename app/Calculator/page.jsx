@@ -291,7 +291,6 @@
 //   );
 // }
 
-
 // ---------------------------------------------------
 // "use client";
 
@@ -532,7 +531,11 @@ export default function UmrahCalculator() {
   const [priceYouth, setPriceYouth] = useState("");
   const [priceChild, setPriceChild] = useState("");
   const [priceInfant, setPriceInfant] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
+  const handlePreview = () => {
+    setShowModal(!showModal); // toggle modal
+  };
   const flightTotal =
     (Number(priceAdult) || 0) +
     (Number(priceYouth) || 0) +
@@ -580,7 +583,8 @@ export default function UmrahCalculator() {
   const grossAdult = htvPerPerson + Number(markup) + (Number(priceAdult) || 0);
   const grossYouth = htvPerPerson + Number(markup) + (Number(priceYouth) || 0);
   const grossChild = htvPerPerson + Number(markup) + (Number(priceChild) || 0);
-  const grossInfant = htvPerPerson + Number(markup) + (Number(priceInfant) || 0);
+  const grossInfant =
+    htvPerPerson + Number(markup) + (Number(priceInfant) || 0);
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-8 font-sans">
@@ -663,7 +667,11 @@ export default function UmrahCalculator() {
               setHotel: setHolidayPackage,
               price: holidayPrice,
               setPrice: setHolidayPrice,
-              options: ["Economy Package", "Standard Package", "Luxury Package"],
+              options: [
+                "Economy Package",
+                "Standard Package",
+                "Luxury Package",
+              ],
             },
           ].map((item, idx) => (
             <div key={idx} className="flex justify-between items-center mb-3">
@@ -780,13 +788,47 @@ export default function UmrahCalculator() {
             </h2>
 
             {/* Buttons */}
-            <div className="flex gap-3">
-              <button className="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white px-3 py-1 rounded-lg shadow">
-                <AiOutlineEye size={18} /> Preview
-              </button>
-              <button className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg shadow">
-                <AiOutlineDownload size={18} /> Download
-              </button>
+            <div className="relative">
+              {/* Buttons */}
+              <div className="flex gap-3">
+                <button
+                  onClick={handlePreview}
+                  className="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white px-3 py-1 rounded-lg shadow"
+                >
+                  <AiOutlineEye size={18} />{" "}
+                  {showModal ? "Close Preview" : "Preview"}
+                </button>
+
+                <a
+                  href="/sample.pdf"
+                  download
+                  className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg shadow"
+                >
+                  <AiOutlineDownload size={18} /> Download
+                </a>
+              </div>
+
+              {/* Modal */}
+              {showModal && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
+                  <div className="bg-white rounded-lg w-[90%] md:w-[80%] lg:w-[70%] h-[90%] p-3 shadow-lg relative">
+                    {/* Close Button */}
+                    <button
+                      onClick={handlePreview}
+                      className="absolute top-2 right-3 text-gray-600 hover:text-red-600 font-bold text-xl"
+                    >
+                      ✕
+                    </button>
+
+                    {/* PDF Preview */}
+                    <iframe
+                      src="/sample.pdf"
+                      title="PDF Preview"
+                      className="w-full h-full rounded-md"
+                    ></iframe>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -810,7 +852,9 @@ export default function UmrahCalculator() {
           </div>
 
           <div className="flex justify-between items-center mb-3">
-            <span className="font-medium text-gray-700">(H+T+V) Per Person</span>
+            <span className="font-medium text-gray-700">
+              (H+T+V) Per Person
+            </span>
             <span className="font-bold text-indigo-600">
               £{htvPerPerson.toFixed(2)}
             </span>
@@ -843,7 +887,9 @@ export default function UmrahCalculator() {
             </div>
 
             <div className="bg-gray-100 rounded-xl p-4 shadow-inner">
-              <h3 className="text-lg font-semibold mb-2 text-gray-700">Notes</h3>
+              <h3 className="text-lg font-semibold mb-2 text-gray-700">
+                Notes
+              </h3>
               <textarea
                 placeholder="Write your notes here..."
                 className="w-full h-32 border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
